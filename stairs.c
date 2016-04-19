@@ -16,6 +16,9 @@ wave transmitting across the lights when a sensor is activated.
 #define WAVE_LENGTH (WAVE_HIGH_BOUND - WAVE_LOW_BOUND)
 #define BOTTOM_BOUND 0.0
 #define TOP_BOUND 1000.0
+#define WAVE_OOB ( ( wave_position + WAVE_HIGH_BOUND ) < BOTTOM_BOUND \
+                                || ( wave_position + WAVE_LOW_BOUND  ) > TOP_BOUND )
+
 			
 const double PI = atan(1.0);
 
@@ -79,7 +82,7 @@ void loop() {
 	}
 	
 	// Stop wave if out of bounds
-	if ( OOB( wave_position, WAVE_LOW_BOUND, WAVE_HIGH_BOUND ) ) {
+	if ( WAVE_OOB ) ) {
 		wave_speed = 0;
 	}	
 	
