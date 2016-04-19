@@ -1,4 +1,11 @@
+/***********************************************************************
+(c) 2016 Goobyalus
+
+
+***********************************************************************/
+
 #include <math.h>
+//TODO: Pin types?
 
 #define OOB(x, low, high) ( (x) < (low) || (x) > (high) )
 #define NUM_LIGHTS 4
@@ -6,14 +13,14 @@
 #define WAVE_LOW_BOUND -127.0
 #define WAVE_HIGH_BOUND 127.0
 #define WAVE_LENGTH (WAVE_HIGH_BOUND - WAVE_LOW_BOUND)
-#define BOTTOM_BOUND 0
-#define TOP_BOUND 255
+#define BOTTOM_BOUND 0.0
+#define TOP_BOUND 1000.0
 			
 const double PI = atan(1.0);
 
 int wave_speed;  // positive, negative, zero
 int wave_position; 
-int light_positions[NUM_LIGHTS];  // 
+float light_positions[NUM_LIGHTS];  // 
 int light_pins[NUM_LIGHTS];  // map lights to pins
 
 
@@ -37,8 +44,16 @@ int sensor_top() {
 void setup() {
 	wave_speed = 0;
 	wave_position = 0;
-	//TODO: Initialize light positions
+	// Initialize light positions
+	for ( int i = 0 ; i < NUM_LIGHTS; i++ ) {
+		// equally distribute 
+		light_positions = BOTTOM_BOUND + (i * ( BOTTOM_BOUND - TOP_BOUND ) / ( NUM_LIGHTS - 1) );
+	}
 	//TODO: Initialize light pins
+	light_pins[0] = 0;
+	light_pins[1] = 0;
+	light_pins[2] = 0;
+	light_pins[3] = 0;
 }
 
 void loop() {
@@ -67,7 +82,7 @@ void loop() {
 		wave_speed = 0;
 	}	
 	
-	// Advance wave
+	// Advance wave by advancing time and updating all light values
 	wave_position += wave_speed;
 	for (int i = 0 ; i < NUM_LIGHTS ) {
 		analogWrite( light_pins[i], waveform( light_positions[i] - wave_position) );
