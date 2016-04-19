@@ -18,7 +18,6 @@ wave transmitting across the lights when a sensor is activated.
 #define TOP_BOUND 1000.0
 #define WAVE_OOB ( ( wave_position + WAVE_HIGH_BOUND ) < BOTTOM_BOUND \
                                 || ( wave_position + WAVE_LOW_BOUND  ) > TOP_BOUND )
-
 			
 const double PI = atan(1.0);
 
@@ -63,9 +62,9 @@ void setup() {
 void loop() {
 	
 	// Note: Speed of this loop, and SPEED_MAGNITUDE, determine speed of wave
-	//       Does not create multiple waves
-
-	//TODO: Does not incorporate special case for during wave 
+	//       This code does not create multiple waves
+	//		 Does not incorporate special case for during wave 
+	
 	if ( sensor_bottom() ) {		
 		// start wave at bottom
 		wave_position = BOTTOM_BOUND - WAVE_HIGH_BOUND;
@@ -86,8 +85,8 @@ void loop() {
 		wave_speed = 0;
 	}	
 	
+	// Advance wave by advancing time and updating all light values	
 	if ( wave_speed ) {	// Saves processing time while wave is not active
-		// Advance wave by advancing time and updating all light values
 		wave_position += wave_speed;
 		for (int i = 0 ; i < NUM_LIGHTS ) {
 			analogWrite( light_pins[i], waveform( light_positions[i] - wave_position) );
