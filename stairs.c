@@ -1,26 +1,29 @@
+#include <math.h>
+
+#define OOB(x, low, high) ( (x) < (low) || (x) > (high) )
 #define NUM_LIGHTS 4
 #define SPEED_MAGNITUDE 10
-#define WAVE_LOW_BOUND -127
-#define WAVE_HIGH_BOUND 127
+#define WAVE_LOW_BOUND -127.0
+#define WAVE_HIGH_BOUND 127.0
 #define WAVE_LENGTH (WAVE_HIGH_BOUND - WAVE_LOW_BOUND)
 #define BOTTOM_BOUND 0
 #define TOP_BOUND 255
-#define WAVE_OOB ( ( wave_position + WAVE_HIGH_BOUND ) < BOTTOM_BOUND \
-				|| ( wave_position + WAVE_LOW_BOUND  ) > TOP_BOUND )
+			
+const double PI = atan(1.0);
 
 int wave_speed;  // positive, negative, zero
 int wave_position; 
 int light_positions[NUM_LIGHTS];  // 
 int light_pins[NUM_LIGHTS];  // map lights to pins
 
+
 // Return the value of a waveform at the position x.
-// Should return value in [0, 255]
-int waveform ( int x ) {
-	if (x < -127 || x > 127) {
+// Bounded by WAVE_LOW_BOUND and WAVE_HIGH_BOUND -- 0's outside
+int waveform ( double x ) {
+	if ( OOB( x, WAVE_LOW_BOUND, WAVE_HIGH_BOUND ) ) {
 		return 0;
 	}
-	x = x*2*3.1415/128; // Convert to radians
-	return cos() //TODO
+	return ( 1 + cos(x * PI / 127) ) * 255 / 2;
 }
 
 int sensor_bottom() {
@@ -60,7 +63,7 @@ void loop() {
 	}
 	
 	// Stop wave if out of bounds
-	if ( WAVE_OOB ) {
+	if ( OOB( wave_position, WAVE_LOW_BOUND, WAVE_HIGH_BOUND ) ) {
 		wave_speed = 0;
 	}	
 	
@@ -76,6 +79,4 @@ void loop() {
 Idea
 	lights have coordinates
 	bounded waveform travels from origin sensor to termination
-	reverse direction if in procession
-
 */
