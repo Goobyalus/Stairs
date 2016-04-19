@@ -3,6 +3,11 @@
 
 Given some distribution of lights and a sensor on each end, display a
 wave transmitting across the lights when a sensor is activated.
+
+This code does not account for:
+* special behavior when wave is already in motion and sensor is acivated
+* multiple waves at once
+* flipping waves in different directions
 ***********************************************************************/
 
 #include <math.h>
@@ -65,14 +70,14 @@ void loop() {
 	//       This code does not create multiple waves
 	//		 Does not incorporate special case for during wave 
 	
-	if ( sensor_bottom() ) {		
+	if ( sensor_bottom() && wave_speed <= 0 ) {		
 		// start wave at bottom
 		wave_position = BOTTOM_BOUND - WAVE_HIGH_BOUND;
 		wave_position -= SPEED_MAGNITUDE;  // account for 1at advance wave
 		// move wave up
 		wave_speed = SPEED_MAGNITUDE;		
 		
-	} else if ( sensor_top() ) {	
+	} else if ( sensor_top() && wave_speed >= 0 ) {	
 		// start wave at top
 		wave_position = TOP_BOUND - WAVE_LOW_BOUND;
 		wave_position += SPEED_MAGNITUDE;  // account for 1at advance wave
@@ -85,7 +90,7 @@ void loop() {
 		wave_speed = 0;
 	}	
 	
-	// Advance wave by advancing time and updating all light values	
+	// Advance wave by advancing time and updating all light values
 	if ( wave_speed ) {	// Saves processing time while wave is not active
 		wave_position += wave_speed;
 		for (int i = 0 ; i < NUM_LIGHTS ) {
