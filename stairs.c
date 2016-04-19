@@ -1,7 +1,8 @@
 /***********************************************************************
 (c) 2016 Goobyalus
 
-
+Given some distribution of lights and a sensor on each end, display a
+wave transmitting across the lights when a sensor is activated.
 ***********************************************************************/
 
 #include <math.h>
@@ -82,12 +83,13 @@ void loop() {
 		wave_speed = 0;
 	}	
 	
-	// Advance wave by advancing time and updating all light values
-	wave_position += wave_speed;
-	for (int i = 0 ; i < NUM_LIGHTS ) {
-		analogWrite( light_pins[i], waveform( light_positions[i] - wave_position) );
+	if ( wave_speed ) {	// Saves processing time while wave is not active
+		// Advance wave by advancing time and updating all light values
+		wave_position += wave_speed;
+		for (int i = 0 ; i < NUM_LIGHTS ) {
+			analogWrite( light_pins[i], waveform( light_positions[i] - wave_position) );
+		}
 	}
-
 }
 
 /*
