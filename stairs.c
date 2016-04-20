@@ -13,6 +13,7 @@ This code does not account for:
 #include <math.h>
 //TODO: Pin types?
 
+#define REVERSE_ON_
 #define OOB(x, low, high) ( (x) < (low) || (x) > (high) )
 #define NUM_LIGHTS 4
 #define SPEED_MAGNITUDE 10
@@ -28,8 +29,10 @@ const double PI = atan(1.0);
 
 int wave_speed;  // positive, negative, zero
 int wave_position; 
-float light_positions[NUM_LIGHTS];  // 
+float light_positions[NUM_LIGHTS];
 int light_pins[NUM_LIGHTS];  // map lights to pins
+int sensor_bottom_pin;
+int sesor_top_pin;
 
 
 // Return the value of a waveform at the position x.
@@ -62,6 +65,10 @@ void setup() {
 	light_pins[1] = 0;
 	light_pins[2] = 0;
 	light_pins[3] = 0;
+	
+	//TODO: initialize sensor pins
+	sensor_bottom_pin = 0;
+	sensor_top_pin = 0;
 }
 
 void loop() {
