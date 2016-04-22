@@ -13,7 +13,7 @@ This code does not account for:
 #include <math.h>
 //TODO: Pin types?
 
-#define REVERSE_ON_
+#define REVERSE_WAVEFORM_ON_REVERSE_WAVE 0  //TODO: feature unimplemented
 #define OOB(x, low, high) ( (x) < (low) || (x) > (high) )
 #define NUM_LIGHTS 4
 #define SPEED_MAGNITUDE 10
@@ -22,8 +22,14 @@ This code does not account for:
 #define WAVE_LENGTH (WAVE_HIGH_BOUND - WAVE_LOW_BOUND)
 #define BOTTOM_BOUND 0.0
 #define TOP_BOUND 1000.0
-#define WAVE_OOB ( ( wave_position + WAVE_HIGH_BOUND ) < BOTTOM_BOUND \
+#define WAVE_OOB_FWD ( ( wave_position + WAVE_HIGH_BOUND ) < BOTTOM_BOUND \
                                 || ( wave_position + WAVE_LOW_BOUND  ) > TOP_BOUND )
+#if REVERSE_WAVEFORM_ON_REVERSE_WAVE == 0
+#define WAVE_OOB WAVE_OOB_FWD
+#else
+#define WAVE_OOB ( wave_speedd > 0 ) ? WAVE_OOB_FWD : ( ( ) )  //TODO
+#endif
+                                
 			
 const double PI = atan(1.0);
 
@@ -60,15 +66,20 @@ void setup() {
 		// equally distribute 
 		light_positions = BOTTOM_BOUND + (i * ( BOTTOM_BOUND - TOP_BOUND ) / ( NUM_LIGHTS - 1) );
 	}
-	//TODO: Initialize light pins
-	light_pins[0] = 0;
-	light_pins[1] = 0;
-	light_pins[2] = 0;
-	light_pins[3] = 0;
+	//Initialize light pins
+	light_pins[0] = 11;
+	light_pins[1] = 10;
+	light_pins[2] = 9;
+	light_pins[3] = 6;
+	for ( int i = 0 ; i < sizeof(light_pins); i++) {
+		pinMode(light_pins[i], OUTPUT);
+	}
 	
 	//TODO: initialize sensor pins
-	sensor_bottom_pin = 0;
-	sensor_top_pin = 0;
+	sensor_bottom_pin = 7;
+	sensor_top_pin = 8;
+	pinMode(sensor_bottom_pin, INPUT);
+	pinMode(sensor_top_pin, INPUT);
 }
 
 void loop() {
@@ -104,6 +115,7 @@ void loop() {
 			analogWrite( light_pins[i], waveform( light_positions[i] - wave_position) );
 		}
 	}
+	delay(1);
 }
 
 /*
