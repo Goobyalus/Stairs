@@ -31,14 +31,14 @@ This code does not account for:
 #endif
                                 
 			
-const double PI = atan(1.0);
+//const double PI = atan(1.0);
 
 int wave_speed;  // positive, negative, zero
 int wave_position; 
-float light_positions[NUM_LIGHTS];
+double light_positions[NUM_LIGHTS];
 int light_pins[NUM_LIGHTS];  // map lights to pins
 int sensor_bottom_pin;
-int sesor_top_pin;
+int sensor_top_pin;
 
 
 // Return the value of a waveform at the position x.
@@ -64,7 +64,7 @@ void setup() {
 	// Initialize light positions
 	for ( int i = 0 ; i < NUM_LIGHTS; i++ ) {
 		// equally distribute 
-		light_positions = BOTTOM_BOUND + (i * ( BOTTOM_BOUND - TOP_BOUND ) / ( NUM_LIGHTS - 1) );
+		light_positions[i] = BOTTOM_BOUND + (i * ( BOTTOM_BOUND - TOP_BOUND ) / ( NUM_LIGHTS - 1) );
 	}
 	// Initialize light pins
 	light_pins[0] = 11;
@@ -104,14 +104,14 @@ void loop() {
 	}
 	
 	// Stop wave if out of bounds
-	if ( WAVE_OOB ) ) {
+	if ( WAVE_OOB ) {
 		wave_speed = 0;
 	}	
 	
 	// Advance wave by advancing time and updating all light values
 	if ( wave_speed ) {	// Saves processing time while wave is not active
 		wave_position += wave_speed;
-		for (int i = 0 ; i < NUM_LIGHTS ) {
+		for (int i = 0 ; i < NUM_LIGHTS; i++ ) {
 			analogWrite( light_pins[i], waveform( light_positions[i] - wave_position) );
 		}
 	}
