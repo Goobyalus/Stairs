@@ -66,7 +66,7 @@ void setup() {
 		// equally distribute 
 		light_positions = BOTTOM_BOUND + (i * ( BOTTOM_BOUND - TOP_BOUND ) / ( NUM_LIGHTS - 1) );
 	}
-	//Initialize light pins
+	// Initialize light pins
 	light_pins[0] = 11;
 	light_pins[1] = 10;
 	light_pins[2] = 9;
@@ -75,7 +75,7 @@ void setup() {
 		pinMode(light_pins[i], OUTPUT);
 	}
 	
-	//TODO: initialize sensor pins
+	// Initialize sensor pins
 	sensor_bottom_pin = 7;
 	sensor_top_pin = 8;
 	pinMode(sensor_bottom_pin, INPUT);
