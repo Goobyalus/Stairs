@@ -8,6 +8,8 @@ This code does not account for:
 * special behavior when wave is already in motion and sensor is acivated
 * multiple waves at once
 * flipping waves in different directions
+
+This code has not yet been tested.
 ***********************************************************************/
 
 #include <math.h>
@@ -51,11 +53,11 @@ int waveform ( double x ) {
 }
 
 int sensor_bottom() {
-	//TODO
+	return digitalRead(sensor_bottom_pin);
 }
 
 int sensor_top() {
-	//TODO
+	return digitalRead(sensor_top_pin);
 }
 
 void setup() {
@@ -104,9 +106,10 @@ void loop() {
 	}
 	
 	// Stop wave if out of bounds
-	if ( WAVE_OOB ) {
-		wave_speed = 0;
-	}	
+	// TODO: Does not work because OOB is too strict and always OOB 
+	//if ( WAVE_OOB ) {
+	//	wave_speed = 0;
+	//}	
 	
 	// Advance wave by advancing time and updating all light values
 	if ( wave_speed ) {	// Saves processing time while wave is not active
