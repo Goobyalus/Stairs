@@ -13,7 +13,6 @@ TODO: Wave OOB does not work.
 ***********************************************************************/
 
 #include <math.h>
-//TODO: Pin types?
 
 #define REVERSE_WAVEFORM_ON_REVERSE_WAVE 0  //TODO: feature unimplemented
 #define OOB(x, low, high) ( (x) < (low) || (x) > (high) )
@@ -35,12 +34,12 @@ TODO: Wave OOB does not work.
       
 //const double PI = atan(1.0);
 
-int wave_speed;  // positive, negative, zero
-int wave_position; 
-double light_positions[NUM_LIGHTS];
-int light_pins[NUM_LIGHTS];  // map lights to pins
-int sensor_bottom_pin;
-int sensor_top_pin;
+int     wave_speed;  // positive, negative, zero
+int     wave_position; 
+double  light_positions[NUM_LIGHTS];
+int     light_pins[NUM_LIGHTS];  // map lights to pins
+int     sensor_bottom_pin;
+int     sensor_top_pin;
 
 
 // Return the value of a waveform at the position x.
