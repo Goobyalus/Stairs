@@ -9,7 +9,7 @@ This code does not account for:
 * multiple waves at once
 * flipping waves in different directions
 
-This code has not yet been tested.
+TODO: Wave OOB does not work.
 ***********************************************************************/
 
 #include <math.h>
