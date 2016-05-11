@@ -95,23 +95,17 @@ void loop() {
   if ( sensor_bottom() && wave_speed <= 0 ) {   
     // start wave at bottom
     wave_position = BOTTOM_BOUND - WAVE_HIGH_BOUND;
-    wave_position -= SPEED_MAGNITUDE;  // account for 1at advance wave
+    wave_position -= SPEED_MAGNITUDE;  // account for 1st advance wave
     // move wave up
     wave_speed = SPEED_MAGNITUDE;   
     
   } else if ( sensor_top() && wave_speed >= 0 ) { 
     // start wave at top
     wave_position = TOP_BOUND - WAVE_LOW_BOUND;
-    wave_position += SPEED_MAGNITUDE;  // account for 1at advance wave
+    wave_position += SPEED_MAGNITUDE;  // account for 1st advance wave
     // move wave down
     wave_speed = 0 - SPEED_MAGNITUDE;
   }
-  
-  // Stop wave if out of bounds
-  // TODO: Does not work because OOB is too strict and always OOB 
-  if ( WAVE_OOB ) {
-    wave_speed = 0;
-  } 
   
   // Advance wave by advancing time and updating all light values
   if ( wave_speed ) { // Saves processing time while wave is not active
@@ -120,6 +114,13 @@ void loop() {
       analogWrite( light_pins[i], waveform( light_positions[i] - wave_position) );
     }
   }
+
+  // Stop wave if out of bounds
+  // TODO: Does not work because OOB is too strict and always OOB 
+  if ( WAVE_OOB ) {
+    wave_speed = 0;
+  } 
+  
   delay(1);
 }
 
