@@ -10,6 +10,7 @@ This code does not account for:
 * flipping waves in different directions
 
 TODO: Wave OOB does not work.
+TODO: Debouncing
 ***********************************************************************/
 
 #include <math.h>
@@ -25,10 +26,12 @@ TODO: Wave OOB does not work.
 #define TOP_BOUND 100.0
 #define WAVE_OOB_FWD ( ( wave_position + WAVE_HIGH_BOUND ) < BOTTOM_BOUND \
                                 || ( wave_position + WAVE_LOW_BOUND  ) > TOP_BOUND )
+#define WAVE_OOB_REV ( ( wave_position - WAVE_LOW_BOUND ) < BOTTOM_COUND \
+                                || ( wave_position - WAVE_HIGH_BOUND ) > TOP_BOUND )
 #if REVERSE_WAVEFORM_ON_REVERSE_WAVE == 0
 #define WAVE_OOB WAVE_OOB_FWD
 #else
-#define WAVE_OOB ( wave_speed > 0 ) ? WAVE_OOB_FWD : ( ( ) )  //TODO
+#define WAVE_OOB ( wave_speed > 0 ) ? WAVE_OOB_FWD : ( (wave_speed < 0) ? (WAVE_OOB_REV) : (;) )  //TODO
 #endif
                                 
       
@@ -51,10 +54,10 @@ int waveform ( double x ) {
   return ( 1 + cos(x * PI / 127) ) * 255 / 2;
 }
 
+// These functions should be modified according to your sensors.
 int sensor_bottom() {
   return digitalRead(sensor_bottom_pin);
 }
-
 int sensor_top() {
   return digitalRead(sensor_top_pin);
 }
@@ -64,7 +67,7 @@ void setup() {
   wave_position = 0;
   // Initialize light positions
   for ( int i = 0 ; i < NUM_LIGHTS; i++ ) {
-    // equally distribute 
+    // evenly distribute 
     light_positions[i] = BOTTOM_BOUND + (i * ( BOTTOM_BOUND - TOP_BOUND ) / ( NUM_LIGHTS - 1) );
   }
   // Initialize light pins
@@ -76,7 +79,7 @@ void setup() {
     pinMode(light_pins[i], OUTPUT);
   }
   
-  // Initialize sensor pins
+  // Initialize sensor pins. These should be modified according to your sensors.
   sensor_bottom_pin = 7;
   sensor_top_pin = 8;
   pinMode(sensor_bottom_pin, INPUT);
@@ -106,9 +109,9 @@ void loop() {
   
   // Stop wave if out of bounds
   // TODO: Does not work because OOB is too strict and always OOB 
-  //if ( WAVE_OOB ) {
-  //  wave_speed = 0;
-  //} 
+  if ( WAVE_OOB ) {
+    wave_speed = 0;
+  } 
   
   // Advance wave by advancing time and updating all light values
   if ( wave_speed ) { // Saves processing time while wave is not active
