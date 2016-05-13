@@ -102,7 +102,11 @@ void loop() {
     
   } else if ( sensor_top() && wave_speed >= 0 ) { 
     // start wave at top
+#if REVERSE_WAVEFORM_ON_REVERSE_WAVE
+    wave_position = TOP_BOUND + WAVE_HIGH_BOUND;
+#else    
     wave_position = TOP_BOUND - WAVE_LOW_BOUND;
+#endif
     wave_position += SPEED_MAGNITUDE;  // account for 1st advance wave
     // move wave down
     wave_speed = 0 - SPEED_MAGNITUDE;
@@ -112,7 +116,15 @@ void loop() {
   if ( wave_speed ) { // Saves processing time while wave is not active
     wave_position += wave_speed;
     for (int i = 0 ; i < NUM_LIGHTS; i++ ) {
+#if REVERSE_WAVEFORM_ON_REVERSE_WAVE
+      if ( wave_speed < 0 ) {
+        analogWrite( light_pins[i], waveform( - light_positions[i] + wave_position) );
+      } else  {
+        analogWrite( light_pins[i], waveform( light_positions[i] - wave_position) );
+      }
+#else
       analogWrite( light_pins[i], waveform( light_positions[i] - wave_position) );
+#endif
     }
   }
 
