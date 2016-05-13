@@ -7,7 +7,6 @@ wave transmitting across the lights when a sensor is activated.
 This code does not account for:
 * special behavior when wave is already in motion and sensor is acivated
 * multiple waves at once
-* flipping waves in different directions
 
 Not tested:
 * different variations of bound locations (i.e. does math need to do
