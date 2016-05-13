@@ -26,7 +26,7 @@ TODO: Debouncing
 #define TOP_BOUND 100.0
 #define WAVE_OOB_FWD ( ( wave_position + WAVE_HIGH_BOUND ) < BOTTOM_BOUND \
                                 || ( wave_position + WAVE_LOW_BOUND  ) > TOP_BOUND )
-#define WAVE_OOB_REV ( ( wave_position - WAVE_LOW_BOUND ) < BOTTOM_COUND \
+#define WAVE_OOB_REV ( ( wave_position - WAVE_LOW_BOUND ) < BOTTOM_BOUND \
                                 || ( wave_position - WAVE_HIGH_BOUND ) > TOP_BOUND )
 #if REVERSE_WAVEFORM_ON_REVERSE_WAVE == 0
 #define WAVE_OOB WAVE_OOB_FWD
@@ -55,26 +55,70 @@ int waveform ( double x ) {
 }
 
 // These functions should be modified according to your sensors.
+#if 0
 int sensor_bottom() {
-  return digitalRead(sensor_bottom_pin);
+  static int count = 0;
+
+  if ( digitalRead(sensor_bottom_pin) ) {
+    if ( count < 5 ) {
+          count ++;
+    } else {
+      count = 0;
+      return HIGH;
+    }
+  } else {
+    count = 0;
+  }
+  return LOW;
 }
 int sensor_top() {
-  return digitalRead(sensor_top_pin);
+  static int count = 0;
+
+  if ( digitalRead(sensor_top_pin) ) {
+    if ( count < 5 ) {
+          count ++;
+    } else {
+      count = 0;
+      return HIGH;
+    }
+  } else {
+    count = 0;
+  }
+  return LOW;
+}
+#endif
+
+int sensor_bottom() {
+  if ( digitalRead(sensor_bottom_pin) ) {
+    Serial.print("BOTTOM\n");
+    return HIGH;
+  }
+  return LOW;
+}
+int sensor_top() {   if ( digitalRead(sensor_top_pin) ) {
+    Serial.print("TOP\n");
+    return HIGH;
+  }
+  return LOW;
 }
 
+
 void setup() {
+  Serial.begin(115200);
+
+  
   wave_speed = 0;
   wave_position = 0;
   // Initialize light positions
   for ( int i = 0 ; i < NUM_LIGHTS; i++ ) {
     // evenly distribute 
-    light_positions[i] = BOTTOM_BOUND + (i * ( BOTTOM_BOUND - TOP_BOUND ) / ( NUM_LIGHTS - 1) );
+    light_positions[i] = BOTTOM_BOUND + (i * ( TOP_BOUND - BOTTOM_BOUND ) / ( NUM_LIGHTS - 1) );
   }
   // Initialize light pins
-  light_pins[0] = 11;
-  light_pins[1] = 10;
-  light_pins[2] = 9;
-  light_pins[3] = 6;
+  light_pins[0] = 6;
+  light_pins[1] = 9;
+  light_pins[2] = 10;
+  light_pins[3] = 11;
   for ( int i = 0 ; i < sizeof(light_pins); i++) {
     pinMode(light_pins[i], OUTPUT);
   }
@@ -117,10 +161,20 @@ void loop() {
 
   // Stop wave if out of bounds
   // TODO: Does not work because OOB is too strict and always OOB 
-  if ( WAVE_OOB ) {
+  if ( WAVE_OOB && wave_speed ) {
     wave_speed = 0;
+    Serial.print('\n');
+    Serial.print(wave_position);
+    for ( int i = 0; i < NUM_LIGHTS; i++) {
+      Serial.print('\n');
+      Serial.print(light_positions[i]);
+    }
+    
   } 
-  
+
+  //Serial.print(wave_position);
+  //Serial.print("\n");
+
   delay(1);
 }
 
