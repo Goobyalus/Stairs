@@ -9,18 +9,19 @@ This code does not account for:
 * multiple waves at once
 * flipping waves in different directions
 
-TODO: Wave OOB does not work.
-TODO: Debouncing
+Not tested:
+* different variations of bound locations (i.e. does math need to do
+  more to account for sign?)
 ***********************************************************************/
 
 #include <math.h>
 
-#define REVERSE_WAVEFORM_ON_REVERSE_WAVE 0  //TODO: feature unimplemented
+#define REVERSE_WAVEFORM_ON_REVERSE_WAVE 1  //TODO: feature unimplemented
 #define OOB(x, low, high) ( (x) < (low) || (x) > (high) )
 #define NUM_LIGHTS 4
 #define SPEED_MAGNITUDE 1
 #define WAVE_LOW_BOUND -127.0
-#define WAVE_HIGH_BOUND 127.0
+#define WAVE_HIGH_BOUND 0.0//127.0
 #define WAVE_LENGTH (WAVE_HIGH_BOUND - WAVE_LOW_BOUND)
 #define BOTTOM_BOUND 0.0
 #define TOP_BOUND 100.0
@@ -31,7 +32,7 @@ TODO: Debouncing
 #if REVERSE_WAVEFORM_ON_REVERSE_WAVE == 0
 #define WAVE_OOB WAVE_OOB_FWD
 #else
-#define WAVE_OOB ( wave_speed > 0 ) ? WAVE_OOB_FWD : ( (wave_speed < 0) ? (WAVE_OOB_REV) : (;) )  //TODO
+#define WAVE_OOB ( wave_speed >= 0 ) ? WAVE_OOB_FWD : ( WAVE_OOB_REV )  //TODO
 #endif
                                 
       
@@ -55,52 +56,8 @@ int waveform ( double x ) {
 }
 
 // These functions should be modified according to your sensors.
-#if 0
-int sensor_bottom() {
-  static int count = 0;
-
-  if ( digitalRead(sensor_bottom_pin) ) {
-    if ( count < 5 ) {
-          count ++;
-    } else {
-      count = 0;
-      return HIGH;
-    }
-  } else {
-    count = 0;
-  }
-  return LOW;
-}
-int sensor_top() {
-  static int count = 0;
-
-  if ( digitalRead(sensor_top_pin) ) {
-    if ( count < 5 ) {
-          count ++;
-    } else {
-      count = 0;
-      return HIGH;
-    }
-  } else {
-    count = 0;
-  }
-  return LOW;
-}
-#endif
-
-int sensor_bottom() {
-  if ( digitalRead(sensor_bottom_pin) ) {
-    Serial.print("BOTTOM\n");
-    return HIGH;
-  }
-  return LOW;
-}
-int sensor_top() {   if ( digitalRead(sensor_top_pin) ) {
-    Serial.print("TOP\n");
-    return HIGH;
-  }
-  return LOW;
-}
+int sensor_bottom() { return digitalRead(sensor_bottom_pin); }
+int sensor_top()    { return digitalRead(sensor_top_pin);    }
 
 
 void setup() {
