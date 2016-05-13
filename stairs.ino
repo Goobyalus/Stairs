@@ -15,7 +15,7 @@ Not tested:
 
 #include <math.h>
 
-#define REVERSE_WAVEFORM_ON_REVERSE_WAVE 1  //TODO: feature unimplemented
+#define REVERSE_WAVEFORM_ON_REVERSE_WAVE 1
 #define OOB(x, low, high) ( (x) < (low) || (x) > (high) )
 #define NUM_LIGHTS 4
 #define SPEED_MAGNITUDE 1
