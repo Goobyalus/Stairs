@@ -20,7 +20,7 @@ Not tested:
 #define NUM_LIGHTS 4
 #define SPEED_MAGNITUDE 1
 #define WAVE_LOW_BOUND -127.0
-#define WAVE_HIGH_BOUND 0.0//127.0
+#define WAVE_HIGH_BOUND 127.0
 #define WAVE_LENGTH (WAVE_HIGH_BOUND - WAVE_LOW_BOUND)
 #define BOTTOM_BOUND 0.0
 #define TOP_BOUND 100.0
@@ -60,9 +60,6 @@ int sensor_top()    { return digitalRead(sensor_top_pin);    }
 
 
 void setup() {
-  Serial.begin(115200);
-
-  
   wave_speed = 0;
   wave_position = 0;
   // Initialize light positions
@@ -125,24 +122,12 @@ void loop() {
       analogWrite( light_pins[i], waveform( light_positions[i] - wave_position) );
 #endif
     }
-  }
 
-  // Stop wave if out of bounds
-  // TODO: Does not work because OOB is too strict and always OOB 
-  if ( WAVE_OOB && wave_speed ) {
-    wave_speed = 0;
-    Serial.print('\n');
-    Serial.print(wave_position);
-    for ( int i = 0; i < NUM_LIGHTS; i++) {
-      Serial.print('\n');
-      Serial.print(light_positions[i]);
+    if ( WAVE_OOB ) {
+      wave_speed = 0;    
     }
-    
-  } 
-
-  //Serial.print(wave_position);
-  //Serial.print("\n");
-
+  }
+  
   delay(1);
 }
 
